@@ -1,6 +1,8 @@
 # Logs
 frontend/logs
 frontend/*.log
+backend/*.log
+backend/middleware/logs
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
