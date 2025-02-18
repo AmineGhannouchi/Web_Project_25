@@ -3,7 +3,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const logEvents = require('./middleware/log');
+const {logger,logEvents} = require('./middleware/log');
 const port = process.env.PORT || 3500;
 const frontend = path.join(__dirname,'..','frontend','dist');
 //"npm run build" pour cree le dossier 'dist'
@@ -11,13 +11,7 @@ const frontend = path.join(__dirname,'..','frontend','dist');
 //"npm run dev" pour le mode devlpement // a chaque modification du code node restart
 
 //custom middleware logger
-app.use((req,res,next) => {
-    logEvents(`${req.method}\t${req.url}\t${req.headers.origin}`);
-    console.log(req.path, req.method);
-    next();
-});
-
-
+app.use(logger);
 
 //^ ← must start with the simbol next to the ^ 
 //$ ← must end with the simbol befor the $

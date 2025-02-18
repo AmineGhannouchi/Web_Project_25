@@ -1,3 +1,4 @@
+const { log } = require('console');
 const { format } = require('date-fns');
 
 const fs = require('fs');
@@ -20,4 +21,9 @@ const logEvents = async (message) => {
     }
 }
 
-module.exports = logEvents;
+const logger = (req,res,next) => {
+    logEvents(`${req.method}\t${req.url}\t${req.headers.origin}`);
+    next();
+}
+
+module.exports = {logEvents,logger};
