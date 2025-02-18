@@ -6,7 +6,7 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 
 const logEvents = async (message, logeDate = format(new Date(), 'yyyyMMdd')) => {
-    const Time = `${format(new Date(), 'HH:mm:ss')}`;
+    const Time = `${format(new Date(), 'yyyy-MM-dd\tHH:mm:ss')}`;
     const logItem = `${Time}\t${message}\n`;
     
     try {
