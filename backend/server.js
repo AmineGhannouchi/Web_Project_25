@@ -4,24 +4,27 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const cors = require('cors');
-const {logger,logEvents} = require('./middleware/log');
+const {logger,logEvents} = require  ('./middleware/log');
 const errorHandler = require('./middleware/errorHandler');
-const port = process.env.PORT || 3500;
-//"npm run build" pour cree le dossier 'dist'
+const pool = require('./database/connect');
+require('dotenv').config();
+
+const port = process.env.PORT || process.env.PORT_SERVEUR;
+//"npm run build" pour cree le dossier 'dist' dans le frontend
 
 //"npm run dev" pour le mode devlpement // a chaque modification du code node restart
+
+
 
 //custom middleware logger and errorHandler
 app.use(logger);
 app.use(errorHandler);
 
 //cross origin resource sharing
-const corsOptions = require('./config/corsConfig');
-app.use(cors(corsOptions)); //for api from externel websites
+app.use(cors(require('./config/corsConfig'))); //for api from externel websites
 
 //the routes
-const router = require('./routes/mainRoute');
-app.use('/',router);
+app.use('/',require('./routes/mainRoute'));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
