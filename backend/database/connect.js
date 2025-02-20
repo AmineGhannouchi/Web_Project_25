@@ -65,7 +65,8 @@ async function initializeDatabase() {
             prenom VARCHAR(255),
             date_de_naissance DATE,
             numero_tel VARCHAR(20),
-            adresse_email VARCHAR(255) UNIQUE
+            adresse_email VARCHAR(255) UNIQUE,
+            mot_de_passe VARCHAR(255)
             )
         `;
     

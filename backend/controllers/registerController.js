@@ -4,15 +4,15 @@ const bcrypt = require('bcrypt');
 // Fonction pour créer un compte général
 createCompte = async (req, res) => {
     try {
-        const { nom, prenom, date_de_naissance, numero_tel, adresse_email } = req.body;
+        const { nom, prenom, date_de_naissance, numero_tel, adresse_email , mot_de_passe} = req.body;
 
         if (!nom || !prenom || !date_de_naissance || !numero_tel || !adresse_email) {
             return res.status(400).json({ error: 'Tous les champs sont requis.' });
         }
-
+        const hashedPassword = await bcrypt.hash(mot_de_passe, 10)
         const [result] = await pool.execute(
-            'INSERT INTO Compte (nom, prenom, date_de_naissance, numero_tel, adresse_email) VALUES (?, ?, ?, ?, ?)',
-            [nom, prenom, date_de_naissance, numero_tel, adresse_email]
+            'INSERT INTO Compte (nom, prenom, date_de_naissance, numero_tel, adresse_email, mot_de_passe) VALUES (?, ?, ?, ?, ?)',
+            [nom, prenom, date_de_naissance, numero_tel, adresse_email,hashedPassword]
         );
         
         return { id_compte: result.insertId, nom, prenom, date_de_naissance, numero_tel, adresse_email };
