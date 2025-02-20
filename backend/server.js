@@ -6,7 +6,7 @@ const path = require('path');
 const cors = require('cors');
 const {logger,logEvents} = require  ('./middleware/log');
 const errorHandler = require('./middleware/errorHandler');
-const pool = require('./database/connect');
+const {pool,initializeDatabase} = require('./database/connect');
 require('dotenv').config();
 
 const port = process.env.PORT || process.env.PORT_SERVEUR;
@@ -20,6 +20,7 @@ const port = process.env.PORT || process.env.PORT_SERVEUR;
 app.use(logger);
 app.use(errorHandler);
 
+
 //cross origin resource sharing
 app.use(cors(require('./config/corsConfig'))); //for api from externel websites
 
@@ -28,5 +29,6 @@ app.use('/',require('./routes/mainRoute'));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    initializeDatabase();
 });
 
