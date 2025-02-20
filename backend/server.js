@@ -7,6 +7,7 @@ const cors = require('cors');
 const {logger,logEvents} = require  ('./middleware/log');
 const errorHandler = require('./middleware/errorHandler');
 const {pool,initializeDatabase} = require('./database/connect');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const port = process.env.PORT || process.env.PORT_SERVEUR;
@@ -19,6 +20,11 @@ const port = process.env.PORT || process.env.PORT_SERVEUR;
 //custom middleware logger and errorHandler
 app.use(logger);
 app.use(errorHandler);
+app.use(cookieParser());
+
+//api
+// app.use('/api/auth', require('./routes/auth'));//
+app.use('/api/register', require('./routes/register'));
 
 
 //cross origin resource sharing
