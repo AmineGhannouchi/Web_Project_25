@@ -51,9 +51,12 @@ createCoiffeur = async (req, res) => {
             'INSERT INTO Compte (nom, prenom, date_de_naissance, numero_tel, adresse_email, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?)',
             [nom, prenom,formatDateForMySQL(date_de_naissance), tel, email,hashedPassword]
         );
+        
+        const insertId = result.insertId; //a ne pas supprimer
+
         const [result2] = await pool.execute(
             'INSERT INTO Compte_Coiffeur (id_compte, adresse) VALUES (?, ?)',
-            [result.id_compte, adresse]
+            [insertId, adresse]
         );
 
         const compte = { id_compte: result.id_compte, nom, prenom, date_de_naissance, tel, email, adresse:result2.adresse};
@@ -68,6 +71,7 @@ createCoiffeur = async (req, res) => {
 createClient =  async (req, res) => {
     try {
         const { nom, prenom, date_de_naissance, tel, email , password} = req.body;
+        console.log(req.body);
 
         if (!nom || !prenom || !date_de_naissance || !tel || !email||!password) {
             return res.status(400).json({ error: 'Tous les champs sont requis.' });
@@ -85,9 +89,12 @@ createClient =  async (req, res) => {
             'INSERT INTO Compte (nom, prenom, date_de_naissance, numero_tel, adresse_email, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?)',
             [nom, prenom,formatDateForMySQL(date_de_naissance), tel, email,hashedPassword]
         );
+
+        const insertId = result.insertId; //a ne pas supprimer
+
         await pool.execute(
             'INSERT INTO Compte_Client (id_compte) VALUES (?)',
-            [id_compte]
+            [insertId]
         );
 
         const compte = { id_compte: result.id_compte, nom, prenom, date_de_naissance, tel, email };

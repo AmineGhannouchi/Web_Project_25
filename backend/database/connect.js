@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
+const fs = require('fs');
 const pool = mysql.createPool({
     host: process.env.HOST,
     user: process.env.USER,
@@ -10,22 +11,6 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0,
 });
-
-
-// Test de la connexion
-// (async () => {
-//     try {
-//         const [rows] = await pool.execute('SELECT 1');
-//         console.log('Connexion réussie au pool !', rows);
-//     } catch (err) {
-//         console.error('Erreur lors de la connexion au pool :', err);
-//     } finally {
-//         await pool.end(); // Fermer le pool après utilisation
-//     }
-// })();
-
-//cretation des base de donner
-
 
 //affichage de la table
 async function displayTables(pool) {
@@ -55,44 +40,25 @@ async function displayTables(pool) {
     }
   }
 
+//cretation des base de donner
 async function initializeDatabase() {
     try {
+      
+
         // Requêtes SQL pour créer les tables
-        const createCompteTable = `
-            CREATE TABLE IF NOT EXISTS Compte (
-            id_compte INT AUTO_INCREMENT PRIMARY KEY,
-            nom VARCHAR(255),
-            prenom VARCHAR(255),
-            date_de_naissance DATE,
-            numero_tel VARCHAR(20),
-            adresse_email VARCHAR(255) UNIQUE,
-            mot_de_passe VARCHAR(255)
-            )
-        `;
-    
-        const createCoiffeurTable = `
-            CREATE TABLE IF NOT EXISTS Compte_Coiffeur (
-            id_compte INT PRIMARY KEY,
-            adresse TEXT,
-            FOREIGN KEY (id_compte) REFERENCES Compte(id_compte) ON DELETE CASCADE
-            )
-        `;
-    
-        const createClientTable = `
-            CREATE TABLE IF NOT EXISTS Compte_Client (
-            id_compte INT PRIMARY KEY,
-            FOREIGN KEY (id_compte) REFERENCES Compte(id_compte) ON DELETE CASCADE
-            )
-        `;
-    
+        const rawData = fs.readFileSync('database/database.json', 'utf8'); // Lire le fichier en mode texte
+        const data = JSON.parse(rawData); // Convertir le JSON en objet JavaScript
+
+        // await pool.execute(data.deleteAllTables);
+
         // Exécuter les requêtes SQL
-        await pool.execute(createCompteTable);
-        await pool.execute(createCoiffeurTable);
-        await pool.execute(createClientTable);
+        await pool.execute(data.createCompteTable);
+        await pool.execute(data.createCoiffeurTable);
+        await pool.execute(data.createClientTable);
 
         // await displayTables(pool);//afficher la base de donner
         
-        // const [tables] = await pool.execute('select * from Compte_Coiffeur;');
+        // const [tables] = await pool.execute('select * from Compte;');
         // tables.forEach(element => {
         //   console.log(element);
         // });
