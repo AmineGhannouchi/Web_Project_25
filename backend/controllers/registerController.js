@@ -30,10 +30,43 @@ async function checkIfExists(email, numero_tel) {
     }
 }
 
-// Fonction pour créer un compte généra
-createCompte = async (req, res) => {
+// Fonction pour créer un compte coiffeur
+createCoiffeur = async (req, res) => {
     try {
-        // console.log(req.body);
+        const { nom, prenom, date_de_naissance, tel, email , password , adresse} = req.body;
+
+        if (!nom || !prenom || !date_de_naissance || !tel || !email||!password) {
+            return res.status(400).json({ error: 'Tous les champs sont requis.' });
+        }
+
+        const checkResult = await checkIfExists(email, tel);
+        if (checkResult.exists) {
+            return res.status(400).json({ error: 'email ou tel deja utiliser' });
+        }
+
+        //crypt password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        //insert data
+        const [result] = await pool.execute(
+            'INSERT INTO Compte (nom, prenom, date_de_naissance, numero_tel, adresse_email, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?)',
+            [nom, prenom,formatDateForMySQL(date_de_naissance), tel, email,hashedPassword]
+        );
+        const [result2] = await pool.execute(
+            'INSERT INTO Compte_Coiffeur (id_compte, adresse) VALUES (?, ?)',
+            [result.id_compte, adresse]
+        );
+
+        const compte = { id_compte: result.id_compte, nom, prenom, date_de_naissance, tel, email, adresse:result2.adresse};
+        return res.status(201).json({compte});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erreur lors de la création du compte.' });
+    }
+}
+
+// Fonction pour créer un compte client
+createClient =  async (req, res) => {
+    try {
         const { nom, prenom, date_de_naissance, tel, email , password} = req.body;
 
         if (!nom || !prenom || !date_de_naissance || !tel || !email||!password) {
@@ -44,11 +77,19 @@ createCompte = async (req, res) => {
         if (checkResult.exists) {
             return res.status(400).json({ error: 'email ou tel deja utiliser' });
         }
-        const hashedPassword = await bcrypt.hash(password, 10)
+
+        //crypt password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        //insert data
         const [result] = await pool.execute(
             'INSERT INTO Compte (nom, prenom, date_de_naissance, numero_tel, adresse_email, mot_de_passe) VALUES (?, ?, ?, ?, ?, ?)',
             [nom, prenom,formatDateForMySQL(date_de_naissance), tel, email,hashedPassword]
         );
+        await pool.execute(
+            'INSERT INTO Compte_Client (id_compte) VALUES (?)',
+            [id_compte]
+        );
+
         const compte = { id_compte: result.id_compte, nom, prenom, date_de_naissance, tel, email };
         return res.status(201).json({compte});
     } catch (error) {
@@ -57,57 +98,5 @@ createCompte = async (req, res) => {
     }
 }
 
-// Fonction pour créer un compte coiffeur
-createCoiffeur = async (req, res) => {
-    try {
-        const { id_compte, adresse } = req.body;
 
-        if (!id_compte || !adresse) {
-            return res.status(400).json({ error: 'ID du compte et l\'adresse sont requis.' });
-        }
-
-        //verifier
-        const [id] = await pool.execute('select id_compte from Compte_Client where id_compte = ?',[id_compte]); 
-        if ([id]){
-            return res.status(400).json({ error: 'compte client ne peut pas etre coiffeur' });
-        } 
-
-        const [result] = await pool.execute(
-            'INSERT INTO Compte_Coiffeur (id_compte, adresse) VALUES (?, ?)',
-            [id_compte, adresse]
-        );
-        res.status(201).json({ id_compte, adresse });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erreur lors de la création du coiffeur.' });
-    }
-}
-
-// Fonction pour créer un compte client
-createClient = async (req, res) => {
-    try {
-        const { id_compte } = req.body;
-
-        if (!id_compte) {
-            return res.status(400).json({ error: 'ID du compte est requis.' });
-        } 
-        //verifier
-        const [id] = await pool.execute('select id_compte from Compte_Coiffeur where id_comte = ?',[id_compte]); 
-        if ([id]){
-            return res.status(400).json({ error: 'compte client ne peut pas etre coiffeur' });
-        } 
-
-        const [result] = await pool.execute(
-            'INSERT INTO Compte_Client (id_compte) VALUES (?)',
-            [id_compte]
-        );
-        
-        return res.status(201).json({ id_compte });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erreur lors de la création du client.' });
-    }
-}
-
-
-module.exports = { createCompte, createCoiffeur, createClient };
+module.exports = {createCoiffeur, createClient };
