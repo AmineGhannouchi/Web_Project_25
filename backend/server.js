@@ -16,6 +16,9 @@ const port = process.env.PORT || process.env.PORT_SERVEUR;
 //"npm run dev" pour le mode devlpement // a chaque modification du code node restart
 
 
+// Middleware pour parser les requêtes JSON
+app.use(express.json()); // Pour parser les requêtes JSON
+app.use(express.urlencoded({ extended: true })); // Pour parser les requêtes form-urlencoded
 
 //custom middleware logger and errorHandler
 app.use(logger);
@@ -38,3 +41,14 @@ app.listen(port, () => {
     initializeDatabase();
 });
 
+// Gérer la fermeture du pool MySQL proprement à l'arrêt du serveur
+process.on('SIGINT', async () => {
+    console.log("Arrêt du serveur détecté... Fermeture du pool MySQL.");
+    try {
+        await pool.end();  // Ferme proprement toutes les connexions
+        console.log("Pool MySQL fermé proprement.");
+    } catch (error) {
+        console.error("Erreur lors de la fermeture du pool MySQL :", error);
+    }
+    process.exit(0);
+});

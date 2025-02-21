@@ -91,9 +91,12 @@ async function initializeDatabase() {
         await pool.execute(createClientTable);
 
         // await displayTables(pool);//afficher la base de donner
-
-        // Fermer la connexion
-        await pool.end();
+        
+        // const [tables] = await pool.execute('select * from Compte_Coiffeur;');
+        // tables.forEach(element => {
+        //   console.log(element);
+        // });
+        
         console.log('Base de données initialisée avec succès.');
         } catch (error) {
         console.error('Erreur lors de l\'initialisation de la base de données :', error.message);
@@ -101,7 +104,6 @@ async function initializeDatabase() {
 }
 
 
-        
 
 
 module.exports = {pool,initializeDatabase};
