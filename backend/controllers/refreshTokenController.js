@@ -8,7 +8,7 @@ const handleRefreshToken = async (req, res) => {
     if (!cookies?.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
     
-    const [user]= await pool.execute('SELECT * FROM Compte WHERE id_compte is(SELECT id_compte FROM refresh_tokens WHERE refresh_token = ?)', [refreshToken]);
+    const [user]= await pool.execute('SELECT * FROM Compte WHERE id_compte = (SELECT id_compte FROM refresh_tokens WHERE refresh_token = ?)', [refreshToken]);
 
     const foundUser = user[0];
     if (!foundUser) return res.sendStatus(403); //Forbidden 
