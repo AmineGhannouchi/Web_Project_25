@@ -8,7 +8,9 @@ const {logger,logEvents} = require  ('./middleware/log');
 const errorHandler = require('./middleware/errorHandler');
 const {pool,initializeDatabase} = require('./database/connect');
 const cookieParser = require('cookie-parser');
+const verifyJWT = require('./middleware/verifyJWT');
 require('dotenv').config();
+
 
 const port = process.env.PORT || process.env.PORT_SERVEUR;
 //"npm run build" pour cree le dossier 'dist' dans le frontend
@@ -26,9 +28,15 @@ app.use(errorHandler);
 app.use(cookieParser());
 
 //api
-app.use('/api/Login', require('./routes/auth'));//authentification
 app.use('/api/register', require('./routes/register'));
+app.use('/api/Login', require('./routes/auth'));//authentification
+app.use('/api/refresh', require('./routes/refresh'));
+app.use('/api/logout', require('./routes/logout'));
 
+app.use(verifyJWT);
+
+//test jwt with console.log
+app.use('/api/test', require('./routes/test'));
 
 //cross origin resource sharing
 app.use(cors(require('./config/corsConfig'))); //for api from externel websites

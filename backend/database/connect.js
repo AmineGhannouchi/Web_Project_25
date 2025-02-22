@@ -55,7 +55,7 @@ async function initializeDatabase() {
         await pool.execute(data.createCompteTable);
         await pool.execute(data.createCoiffeurTable);
         await pool.execute(data.createClientTable);
-        await pool.execute(createRefreshTokensTable);
+        await pool.execute(data.createRefreshTokensTable);
 
 
         // await displayTables(pool);//afficher la base de donner
