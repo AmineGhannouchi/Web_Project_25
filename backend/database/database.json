@@ -2,9 +2,9 @@
     "createCompteTable":"CREATE TABLE IF NOT EXISTS Compte (id_compte INT AUTO_INCREMENT PRIMARY KEY,nom VARCHAR(255),prenom VARCHAR(255),date_de_naissance DATE,numero_tel VARCHAR(20),adresse_email VARCHAR(255) UNIQUE,mot_de_passe VARCHAR(255))",
     "createCoiffeurTable":" CREATE TABLE IF NOT EXISTS Compte_Coiffeur (id_compte INT PRIMARY KEY,adresse TEXT,FOREIGN KEY (id_compte) REFERENCES Compte(id_compte) ON DELETE CASCADE)",
     "createClientTable":"CREATE TABLE IF NOT EXISTS Compte_Client (id_compte INT PRIMARY KEY,FOREIGN KEY (id_compte) REFERENCES Compte(id_compte) ON DELETE CASCADE)",
+    "createRefreshTokensTable":"CREATE TABLE IF NOT EXISTS refresh_tokens (id INT AUTO_INCREMENT PRIMARY KEY,refresh_token VARCHAR(255) NOT NULL,id_compte INT NOT NULL,FOREIGN KEY (id_compte) REFERENCES Compte(id_compte) ON DELETE CASCADE)",
 
-
-    "deleteAllTables":"DROP TABLE IF EXISTS Compte_Client, Compte_Coiffeur, Compte"
+    "deleteAllTables":"DROP TABLE IF EXISTS Compte_Client, Compte_Coiffeur, Compte,refresh_tokens"
 }
 
 

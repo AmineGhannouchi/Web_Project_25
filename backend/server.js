@@ -26,7 +26,7 @@ app.use(errorHandler);
 app.use(cookieParser());
 
 //api
-// app.use('/api/auth', require('./routes/auth'));//
+app.use('/api/Login', require('./routes/auth'));//authentification
 app.use('/api/register', require('./routes/register'));
 
 
