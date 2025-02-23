@@ -35,6 +35,8 @@ app.use('/api/logout', require('./routes/logout'));
 
 app.use(verifyJWT);
 
+app.use('/api/user', require('./routes/user'));
+
 //test jwt with console.log
 app.use('/api/test', require('./routes/test'));
 

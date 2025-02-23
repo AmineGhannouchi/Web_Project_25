@@ -71,7 +71,6 @@ createCoiffeur = async (req, res) => {
 createClient =  async (req, res) => {
     try {
         const { nom, prenom, date_de_naissance, tel, email , password} = req.body;
-        console.log(req.body);
 
         if (!nom || !prenom || !date_de_naissance || !tel || !email||!password) {
             return res.status(400).json({ error: 'Tous les champs sont requis.' });

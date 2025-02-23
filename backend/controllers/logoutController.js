@@ -8,7 +8,7 @@ const handleLogout = async (req, res) => {
     const refreshToken = cookies.jwt;
 
     // Is refreshToken in db?
-    const [user]= await pool.execute('SELECT * FROM Compte WHERE id_compte is(SELECT id_compte FROM refresh_tokens WHERE refresh_token = ?)', [refreshToken]);
+    const [user]= await pool.execute('SELECT * FROM Compte WHERE id_compte = (SELECT id_compte FROM refresh_tokens WHERE refresh_token = ?)', [refreshToken]);
     const foundUser = user[0];
 
     if (!foundUser) {
