@@ -16,16 +16,31 @@ const handleLogin = async (req, res) => {
     if (!foundUser) return res.sendStatus(401); //Unauthorized 
     // evaluate password 
     const match = await bcrypt.compare(pwd, foundUser.mot_de_passe);
+    
+    const [client]=await pool.execute("SELECT * FROM Compte_Client WHERE id_compte = ?",[foundUser.id_compte]);
+    const [coiffeur]=await pool.execute("SELECT * FROM Compte_Coiffeur WHERE id_compte = ?",[foundUser.id_compte]);
+    let role="";
+    if(coiffeur[0].length != 0) {
+        role = "coiffeur";
+    }
+    else if(client[0].length != 0) {
+        role = "client";
+    }
     if (match) {
         // create JWTs
-        // create JWTs
         const accessToken = jwt.sign(
-            { "id_compte": foundUser.id_compte },
+            { 
+                "id_compte": foundUser.id_compte,
+                "role": role
+            },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '30s' }
         );
         const refreshToken = jwt.sign(
-            { "id_compte": foundUser.id_compte },
+            { 
+                "id_compte": foundUser.id_compte,
+                "role": role
+            },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '30d' }
         );

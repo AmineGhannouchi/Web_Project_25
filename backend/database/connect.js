@@ -60,10 +60,16 @@ async function initializeDatabase() {
 
         // await displayTables(pool);//afficher la base de donner
         
-        // const [tables] = await pool.execute('select * from Compte;');
-        // tables.forEach(element => {
-        //   console.log(element);
-        // });
+        // const [table] = await pool.execute('select * from Compte;');
+        // table.forEach(element => {console.log(element);});
+
+        // console.log("compte client");
+        // const [tables] = await pool.execute('select * from Compte_Client;');
+        // tables.forEach(element => {console.log(element);});
+
+        // console.log("compte coiffeur");
+        // const [tables2] = await pool.execute('select * from Compte_Coiffeur;');
+        // tables2.forEach(element => {console.log(element);});
         
         console.log('Base de données initialisée avec succès.');
         } catch (error) {

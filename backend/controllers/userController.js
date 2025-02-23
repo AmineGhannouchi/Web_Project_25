@@ -40,6 +40,13 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         await pool.execute('DELETE FROM Compte WHERE id_compte = ?;', [req.params.id]);
+
+        if(req.user.role === 'coiffeur'){
+            await pool.execute('DELETE FROM Compte_Coiffeur WHERE id_compte = ?;', [req.params.id]);
+        }else if(req.user.role === 'client'){
+            await pool.execute('DELETE FROM Compte_Client WHERE id_compte = ?;', [req.params.id]);
+        }
+
         return res.status(200).json({ success: true, message: 'Compte supprimé avec succès.' });
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Erreur lors de la suppression.', error: error.message });
@@ -59,4 +66,3 @@ const getUser = async (req, res) => {
 }
 
 module.exports = {getAllUsers, updateUser, deleteUser, getUser};
-getAllUsers
